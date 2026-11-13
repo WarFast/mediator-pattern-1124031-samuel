@@ -7,6 +7,7 @@ public class ChatRoom {
     private String roomName;
     private List<User> members;
     private List<String> badWords;
+    private User admin; // orang pertama yang masuk
 
     public ChatRoom(String roomName) {
         this.roomName = roomName;
@@ -18,11 +19,48 @@ public class ChatRoom {
         return roomName;
     }
 
+    public User getAdmin() {
+        return admin;
+    }
+
     public void registerUser(User user) {
-        if (!members.contains(user)) {
-            members.add(user);
-            user.setChatRoom(this);
+        if (members.contains(user)) {
+            return;
         }
+        members.add(user);
+        user.setChatRoom(this);
+        if (admin == null) {
+            admin = user;
+            System.out.println("[ChatRoom - " + roomName + "] " + user.getName() + " bergabung sebagai ADMIN.");
+        } else {
+            System.out.println("[ChatRoom - " + roomName + "] " + user.getName() + " bergabung.");
+        }
+    }
+
+    // Kick user dari room (logika inti sesuai spesifikasi)
+    public void removeUser(User user) {
+        if (members.remove(user)) {
+            user.removeChatRoom(this);
+            System.out.println("[ChatRoom - " + roomName + "] " + user.getName() + " telah dikeluarkan.");
+        }
+    }
+
+    // Kick yang divalidasi: hanya admin yang boleh
+    public void kick(User requester, User target) {
+        if (requester != admin) {
+            System.out.println("[ChatRoom - " + roomName + "] Akses ditolak: " + requester.getName()
+                    + " bukan admin.");
+            return;
+        }
+        if (target == admin) {
+            System.out.println("[ChatRoom - " + roomName + "] Admin tidak bisa mengeluarkan dirinya sendiri.");
+            return;
+        }
+        if (!members.contains(target)) {
+            System.out.println("[ChatRoom - " + roomName + "] " + target.getName() + " tidak ada di room ini.");
+            return;
+        }
+        removeUser(target);
     }
 
     public void addBadWord(String word) {
@@ -32,7 +70,6 @@ public class ChatRoom {
         }
     }
 
-    // Ganti kata terlarang (case-insensitive, kata utuh) dengan ***
     public String filterMessage(String message) {
         String result = message;
         for (String bad : badWords) {
@@ -43,6 +80,10 @@ public class ChatRoom {
     }
 
     public void sendBroadcast(User sender, String message) {
+        if (!members.contains(sender)) {
+            System.out.println("[ChatRoom - " + roomName + "] " + sender.getName() + " bukan anggota room ini.");
+            return;
+        }
         String filtered = filterMessage(message);
         System.out.println("[ChatRoom - " + roomName + "] (Broadcast dari " + sender.getName() + "): " + filtered);
         for (User member : members) {
@@ -53,6 +94,10 @@ public class ChatRoom {
     }
 
     public void sendPrivateMessage(User sender, String recipientName, String message) {
+        if (!members.contains(sender)) {
+            System.out.println("[ChatRoom - " + roomName + "] " + sender.getName() + " bukan anggota room ini.");
+            return;
+        }
         User recipient = findMember(recipientName);
         if (recipient == null) {
             System.out.println("[ChatRoom - " + roomName + "] User '" + recipientName + "' tidak ditemukan.");

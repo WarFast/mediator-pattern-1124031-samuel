@@ -1,35 +1,47 @@
+import java.util.ArrayList;
+import java.util.List;
+
 public class User {
     private String name;
-    private ChatRoom chatRoom;
+    private List<ChatRoom> chatRooms;
 
     public User(String name) {
         this.name = name;
+        this.chatRooms = new ArrayList<>();
     }
 
     public String getName() {
         return name;
     }
 
+    // Dipanggil oleh ChatRoom saat user di-register
     public void setChatRoom(ChatRoom chatRoom) {
-        this.chatRoom = chatRoom;
+        if (!chatRooms.contains(chatRoom)) {
+            chatRooms.add(chatRoom);
+        }
     }
 
-    public void send(String message) {
-        if (chatRoom == null) {
-            System.out.println("[" + name + "]: Belum tergabung di ChatRoom manapun.");
+    // Dipanggil oleh ChatRoom saat user dikeluarkan
+    public void removeChatRoom(ChatRoom chatRoom) {
+        chatRooms.remove(chatRoom);
+    }
+
+    public void send(ChatRoom room, String message) {
+        if (!chatRooms.contains(room)) {
+            System.out.println("[" + name + "]: Tidak tergabung di ChatRoom " + room.getRoomName() + ".");
             return;
         }
         System.out.println("[" + name + "]: Memproses pengiriman pesan grup...");
-        chatRoom.sendBroadcast(this, message);
+        room.sendBroadcast(this, message);
     }
 
-    public void sendPrivate(String recipientName, String message) {
-        if (chatRoom == null) {
-            System.out.println("[" + name + "]: Belum tergabung di ChatRoom manapun.");
+    public void sendPrivate(ChatRoom room, String recipientName, String message) {
+        if (!chatRooms.contains(room)) {
+            System.out.println("[" + name + "]: Tidak tergabung di ChatRoom " + room.getRoomName() + ".");
             return;
         }
         System.out.println("[" + name + "]: Mengirim pesan privat ke " + recipientName + "...");
-        chatRoom.sendPrivateMessage(this, recipientName, message);
+        room.sendPrivateMessage(this, recipientName, message);
     }
 
     public void receiveMessage(User sender, String message) {
