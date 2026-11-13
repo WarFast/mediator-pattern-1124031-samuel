@@ -1,27 +1,21 @@
 public class Main {
     public static void main(String[] args) {
+        ChatRoom general = new ChatRoom("General");
+
         User budi = new User("Budi");
         User andi = new User("Andi");
         User cici = new User("Cici");
 
-        budi.addContact(andi);
-        budi.addContact(cici);
-        andi.addContact(budi);
-        andi.addContact(cici);
-        cici.addContact(budi);
-        cici.addContact(andi);
+        general.registerUser(budi);
+        general.registerUser(andi);
+        general.registerUser(cici);
 
-        budi.sendGroupMessage("Halo semuanya!");
+        budi.send("Halo semuanya!");
 
+        // User baru tinggal register ke mediator saja
         User dedi = new User("Dedi");
-        budi.addContact(dedi);
-        andi.addContact(dedi);
-        cici.addContact(dedi);
-        dedi.addContact(budi);
-        dedi.addContact(andi);
-        dedi.addContact(cici);
-
+        general.registerUser(dedi);
         System.out.println();
-        dedi.sendGroupMessage("Halo, aku baru join!");
+        dedi.send("Halo, aku baru join!");
     }
 }
