@@ -1,37 +1,36 @@
 public class Main {
     public static void main(String[] args) {
         ChatRoom general = new ChatRoom("General");
-        ChatRoom sports = new ChatRoom("Sports");
         general.addBadWord("bodoh");
 
         User budi = new User("Budi");
         User andi = new User("Andi");
         User cici = new User("Cici");
 
-        // General: Budi admin
-        general.registerUser(budi);
+        general.registerUser(budi); // admin
         general.registerUser(andi);
         general.registerUser(cici);
-
-        // Sports: Cici admin, Andi ikut juga (satu user di banyak room)
-        sports.registerUser(cici);
-        sports.registerUser(andi);
 
         System.out.println();
         budi.send(general, "Halo semuanya!");
         System.out.println();
-        andi.send(sports, "Ada yang nonton bola malam ini?");
+        andi.send(general, "Halo Budi, jangan bodoh ya!");
 
         System.out.println();
-        System.out.println("--- Andi mencoba kick Cici (bukan admin) ---");
-        general.kick(andi, cici);
+        System.out.println("--- Budi mem-mute Andi ---");
+        general.muteUser(budi, andi);
 
         System.out.println();
-        System.out.println("--- Budi (admin General) kick Cici ---");
-        general.kick(budi, cici);
+        andi.send(general, "Kok pesanku nggak muncul?");
+        andi.sendPrivate(general, "Cici", "Cici, kamu lihat?");
+        budi.send(general, "Andi masih bisa baca pesan ini.");
 
         System.out.println();
-        cici.send(general, "Kok aku dikeluarkan?");   // ditolak
-        cici.send(sports, "Di Sports aku masih bisa kirim pesan.");
+        System.out.println("--- Budi meng-unmute Andi ---");
+        general.unmuteUser(budi, andi);
+        andi.send(general, "Terima kasih!");
+
+        System.out.println();
+        general.showHistory();
     }
 }

@@ -14,14 +14,11 @@ public class User {
         return name;
     }
 
-    // Dipanggil oleh ChatRoom saat user di-register
     public void setChatRoom(ChatRoom chatRoom) {
         if (!chatRooms.contains(chatRoom)) {
             chatRooms.add(chatRoom);
         }
     }
-
-    // Dipanggil oleh ChatRoom saat user dikeluarkan
     public void removeChatRoom(ChatRoom chatRoom) {
         chatRooms.remove(chatRoom);
     }
