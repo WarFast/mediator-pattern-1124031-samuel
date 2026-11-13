@@ -1,7 +1,6 @@
 import java.util.ArrayList;
 import java.util.List;
 
-// Mediator
 public class ChatRoom {
     private String roomName;
     private List<User> members;
@@ -29,5 +28,25 @@ public class ChatRoom {
                 member.receiveMessage(sender, message);
             }
         }
+    }
+
+    public void sendPrivateMessage(User sender, String recipientName, String message) {
+        User recipient = findMember(recipientName);
+        if (recipient == null) {
+            System.out.println("[ChatRoom - " + roomName + "] User '" + recipientName + "' tidak ditemukan.");
+            return;
+        }
+        System.out.println("[ChatRoom - " + roomName + "] (Private " + sender.getName() + " -> "
+                + recipient.getName() + "): " + message);
+        recipient.receivePrivateMessage(sender, message);
+    }
+
+    private User findMember(String name) {
+        for (User member : members) {
+            if (member.getName().equalsIgnoreCase(name)) {
+                return member;
+            }
+        }
+        return null;
     }
 }

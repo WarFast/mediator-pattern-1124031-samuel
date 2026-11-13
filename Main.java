@@ -11,11 +11,7 @@ public class Main {
         general.registerUser(cici);
 
         budi.send("Halo semuanya!");
-
-        // User baru tinggal register ke mediator saja
-        User dedi = new User("Dedi");
-        general.registerUser(dedi);
         System.out.println();
-        dedi.send("Halo, aku baru join!");
+        budi.sendPrivate("Cici", "Rahasia ya ini");
     }
 }
